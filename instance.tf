@@ -32,6 +32,11 @@ resource "aws_instance" "dove-inst" {
     host        = self.public_ip
   }
 }
+
+resource "aws_eip" "dove-eip" {
+  instance = aws_instance.dove-inst.id
+}
+
 output "PublicIP" {
   value = aws_instance.dove-inst.public_ip
 }
@@ -39,3 +44,8 @@ output "PublicIP" {
 output "PrivateIP" {
   value = aws_instance.dove-inst.private_ip
 }
+
+output "ElasticIP" {
+  value = aws_eip.dove-eip.public_ip
+}
+
