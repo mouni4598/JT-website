@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'action', defaultValue: 'apply', description: 'Terraform action (apply/destroy)')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,24 +12,25 @@ pipeline {
             }
         }
     
-        stage ("terraform init") {
+        stage("terraform init") {
             steps {
                 sh ("terraform init -reconfigure") 
             }
         }
         
-        stage ("plan") {
+        stage("plan") {
             steps {
                 sh ('terraform plan') 
             }
         }
-       stage (" Action") {
-           steps {
-             echo "Terraform action is --> apply"
-             sh ('terraform apply --auto-approve') 
-             }
+       
+        stage("Action") {
+            steps {
+                script {
+                    echo "Terraform action is --> ${params.action}"
+                    sh "terraform ${params.action} --auto-approve"
+                }
+            }
         }
-
     }
 }
-    
